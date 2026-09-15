@@ -1,0 +1,11 @@
+# 赛题一 search_track 感知层配置 (spec 029 + spec 032)
+perception:
+  photo_mode: auto            # auto(默认,非 dry_run 自动拉取 UE 渲染的 PNG 相机帧)/on/off
+  accuracy: 0.85              # AccuracySimulator 检出概率（train 模式默认算法）
+  noise_sigma_m: 50.0         # 位置噪声标准差（米）
+  yolo:                       # YoloDetector 参数（eval 模式默认算法）
+    model_path: "models/target_vehicle_yolov8s.pt"
+    imgsz: 1024
+    conf: 0.16                # 单类域模型优先召回，时空门控抑制背景误报
+    camera_hfov_deg: 15.0     # 默认 detector 回退时与 Agent 实际 FOV 一致
+    camera_vfov_deg: 11.3

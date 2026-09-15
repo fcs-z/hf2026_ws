@@ -1,0 +1,9 @@
+redis==7.4.1
+PyYAML==6.0.3
+numpy==2.5.2
+opencv-python==5.0.0.93
+Pillow==12.3.0
+torch==2.13.0
+torchvision==0.28.0
+ultralytics==8.4.126
+lap==0.5.13

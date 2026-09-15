@@ -1,0 +1,22 @@
+{
+  "model": "models/hf2026_vehicle_binary_v2.pt",
+  "base_model": "models/hf2026_target_vehicle_domain_v1.pt",
+  "dataset": ".cache/hf2026/official-yolo-binary-seed2026/dataset.yaml",
+  "epochs_requested": 80,
+  "imgsz": 1024,
+  "batch": 8,
+  "seed": 2026,
+  "class_names": {
+    "0": "TargetVehicle",
+    "1": "DecoyVehicle"
+  },
+  "test": {
+    "metrics/precision(B)": 0.6630258391173742,
+    "metrics/recall(B)": 0.708992865879349,
+    "metrics/mAP50(B)": 0.6976499346595413,
+    "metrics/mAP50-95(B)": 0.4841101741440158,
+    "fitness": 0.4841101741440158
+  },
+  "train_run": ".cache/hf2026/yolo-runs/official-vehicle-binary-v2",
+  "migrated_from": "/home/robot/robot/hf2026/hf2026-sim"
+}

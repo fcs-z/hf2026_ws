@@ -1,0 +1,12 @@
+{
+  "scenario": "search_track",
+  "mode": "eval",
+  "duration_s": 600,
+  "seed": 1,
+  "total_score": 89.04,
+  "passed": true,
+  "n_reports": 599,
+  "targeting_rmse_m": 5.004583765932622,
+  "penalty": 0.0,
+  "evaluation_file": "search_track_1789403838.evaluation.json"
+}

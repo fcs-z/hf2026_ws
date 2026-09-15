@@ -1,0 +1,12 @@
+# 赛题二 coop_decoy 感知层配置 (spec 032)
+# 与赛题一 search_track/config/algorithm.yaml 字段完全一致。
+perception:
+  photo_mode: auto            # auto(默认,非 dry_run 自动拉取 UE 渲染的 PNG 相机帧)/on/off
+  accuracy: 0.85              # AccuracySimulator 检出概率（train 模式默认算法）
+  noise_sigma_m: 50.0         # 位置噪声标准差（米）
+  yolo:                       # YoloDetector 参数（eval 模式默认算法）
+    model_path: "models/target_vehicle_yolov8s.pt"
+    imgsz: 1024
+    conf: 0.08                # 小目标召回优先，连续帧/多机投票过滤误报
+    camera_hfov_deg: 40.0     # 与搜索/跟踪固定 FOV 一致
+    camera_vfov_deg: 30.0

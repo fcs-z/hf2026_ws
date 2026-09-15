@@ -1,0 +1,20 @@
+{
+  "scenario": "coop_decoy",
+  "mode": "train",
+  "seed_1": {
+    "duration_s": 360,
+    "total_score": 99.07,
+    "passed": true,
+    "n_destroyed": 3,
+    "targeting_rmse_m": 3.7579642914491598,
+    "proximity_penalty_count": 0
+  },
+  "seed_2": {
+    "duration_s": 360,
+    "total_score": 92.88,
+    "passed": true,
+    "n_destroyed": 3,
+    "targeting_rmse_m": 4.509661149092126,
+    "proximity_penalty_count": 3
+  }
+}

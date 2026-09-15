@@ -1,0 +1,51 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local Python environments
+.venv/
+venv/
+env/
+
+# Simulator runtime state
+.cache/
+run/
+benchmark_results/
+competition/scenarios/*/output/
+.hf2026_submission_backup/
+*.evaluation.json
+
+# Training outputs and local datasets
+runs/
+dataset/
+datasets/
+wandb/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+~$*.docx
+
+# Local editor and operating-system metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Locally built submission archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
