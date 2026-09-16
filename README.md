@@ -22,12 +22,12 @@
 
 ## 评测结果
 
-| 赛题 | 模式 | 时长 | 种子 | 总分 | 关键结果 |
-| --- | --- | ---: | ---: | ---: | --- |
-| 赛题一 | UE eval | 600 s | 1 | **89.04** | passed，599 次上报，RMSE 5.005 m，零扣分 |
-| 赛题二 | UE eval | 600 s | 1 | **96.97** | passed，3/3 摧毁，RMSE 3.734 m，近距扣 2 分 |
-| 赛题二 | train | 360 s | 1 | **99.07** | passed，3/3 摧毁，RMSE 3.758 m，零扣分 |
-| 赛题二 | train | 360 s | 2 | **92.88** | passed，3/3 摧毁，RMSE 4.510 m |
+| 赛题 | 平台 | 模式 | 时长 | 种子 | 总分 | 关键结果 |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| 赛题一 | v2.0.2 | UE eval | 600 s | 1 | **89.04** | passed，599 次上报，RMSE 5.005 m，零扣分 |
+| 赛题二 | v2.0.3 | UE eval | 600 s | 1 | **92.96** | passed，3/3 摧毁，RMSE 4.419 m，近距扣 6 分 |
+| 赛题二 | v2.0.2 | UE eval | 600 s | 1 | **96.97** | passed，3/3 摧毁，RMSE 3.734 m，近距扣 2 分 |
+| 赛题二 | v2.0.2 | train | 320 s | 1 | **99.07** | passed，3/3 摧毁，RMSE 3.758 m，零扣分 |
 
 精简评测记录保存在 [`evidence/`](evidence/)。最终成绩仍会受到组委会平台版本、随机路线、
 天气、UE 渲染帧率及硬件状态影响。
@@ -59,9 +59,12 @@ flowchart LR
 
 ### 赛题二
 
-赛题二根据公开规则为三个目标分配道路，并使用官方 A* 展开后的折线进行导引。三架无人机
+赛题二根据公开规则为三个目标分配道路，并使用官方 A* 展开后的折线进行导引。项目同时
+提供 v2.0.2 与 v2.0.3 两套 A* 折线缓存，运行时根据官方平台根目录的 `VERSION` 自动选择，
+避免新版“引擎内拼接”路线与旧版逐段拼接路线之间的几百米几何偏差。三架无人机
 围绕当前目标形成三角锚点构型，使至少两架无人机持续盯防超过 20 秒，并为 200 米安全间隔
-预留机动余量。只有裁判返回的摧毁计数增加后，机群才切换到下一个目标。
+预留机动余量。精确路线模式使用 10° 跟踪视场，降低 v2.0.3 密集路网上相邻诱饵抢占原始
+检测结果的概率。只有裁判返回的摧毁计数增加后，机群才切换到下一个目标。
 
 道路未知时，算法进入 `SEARCH → VERIFY → TRACK` 状态机。二分类 YOLO 区分
 `TargetVehicle` 与 `DecoyVehicle`；单机连续多帧形成语义票，两架无人机的新鲜语义票共同
@@ -87,7 +90,7 @@ flowchart LR
 │   │   ├── perception_geometry.py
 │   │   └── vision_sensor.py
 │   ├── competition/scenarios/.../config/algorithm.yaml
-│   ├── config/                      # 公开道路和离线 A* 折线缓存
+│   ├── config/                      # 公开道路及 v2.0.2/v2.0.3 A* 折线缓存
 │   └── scripts/                     # 运行、数据转换、训练和校验脚本
 ├── models/                          # 两套训练权重及指标
 ├── runtime/
@@ -109,6 +112,21 @@ flowchart LR
 
 `runtime/bin/uv` 和 `runtime/wheels/` 已随项目提供。安装脚本使用
 `--offline --no-index`，不会访问网络，也不依赖系统的 `python3-venv` 包。
+
+本项目使用 Git LFS 保存 `.pt` 模型、离线 wheel、PDF 和 Word 报告。从 Git 仓库获取时，
+需要先安装并启用 Git LFS；否则工作区中只会出现很小的 LFS 指针文件：
+
+```bash
+sudo apt update
+sudo apt install -y git-lfs
+git lfs install
+git clone https://github.com/fcs-z/hf2026_ws.git
+cd hf2026_ws
+git lfs pull
+```
+
+完整 `git lfs pull` 会同时下载约 2.8 GiB 的离线 wheelhouse。只需先检查模型时，可执行
+`git lfs pull --include="models/*.pt"`；运行离线安装前仍应拉取全部 LFS 文件。
 
 ## 快速开始
 
@@ -231,6 +249,20 @@ UE 照片。
 
 不要互换两套权重。赛题一使用单类目标车模型；赛题二必须使用同时包含目标车和诱饵车的
 二分类模型。
+
+### 相同种子在不同平台版本得分差异很大
+
+先重新执行 `install_offline.sh` 和 `check_submission.sh`。官方 v2.0.2 与 v2.0.3 的 A* 展开
+实现不同，不能共用同一份展开折线；本项目会读取 `hf2026-sim/VERSION` 自动选择匹配缓存。
+终端启动信息会打印实际平台版本。不要同时保留两套平台的 UE 评测进程；切换目录前先在上一
+套平台执行 `./stop.sh`。汇总输出中的 `runs` 是历史记录列表，本次成绩是最后一项，并可用
+最后打印的 `evaluation_file` 文件名交叉确认。
+
+### 赛题二第三架无人机没有相机流
+
+官方 v2.0.3 的部分 Linux 包虽然声明单个渲染实例支持 4 架飞机，但 UE
+`capture_config.json` 的 `max_aircraft` 仍为 2。`install_offline.sh` 和正式评测脚本会将本地
+UE 容量校正为至少 3 路；修改后必须完全停止并重启平台，已启动的 UE 不会热加载该配置。
 
 ### 安装时访问网络
 

@@ -15,6 +15,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List, Optional, Sequence, Tuple
@@ -141,7 +142,28 @@ def _route_file() -> Path:
 
 
 def _expanded_route_file() -> Path:
-    return Path(__file__).resolve().parents[2] / "config" / "public_astar_routes.json"
+    root = Path(__file__).resolve().parents[2]
+    override = os.environ.get("HF2026_ROUTE_CACHE", "").strip()
+    if override:
+        path = Path(override)
+        return path if path.is_absolute() else root / path
+
+    # v2.0.3 replaced the runner's segment-by-segment A* injection with the
+    # engine-side stitched planner.  The authoring routes are unchanged, but
+    # the expanded road geometry differs by hundreds of metres on some roads.
+    # Select the matching offline cache from the public platform VERSION file.
+    version = (0, 0, 0)
+    try:
+        text = (root / "VERSION").read_text(encoding="utf-8", errors="replace")
+        match = re.search(r"Simulation\s+(\d+)\.(\d+)\.(\d+)", text)
+        if match:
+            version = tuple(int(part) for part in match.groups())
+    except OSError:
+        pass
+    modern = root / "config" / "public_astar_routes_v203.json"
+    if version >= (2, 0, 3) and modern.is_file():
+        return modern
+    return root / "config" / "public_astar_routes.json"
 
 
 def load_public_routes(*, expanded: bool = True) -> List[PublicRoute]:

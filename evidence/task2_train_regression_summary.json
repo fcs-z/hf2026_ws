@@ -1,12 +1,13 @@
 {
   "scenario": "coop_decoy",
   "mode": "train",
+  "platform_version": "Simulation 2.0.2",
   "seed_1": {
-    "duration_s": 360,
+    "duration_s": 320,
     "total_score": 99.07,
     "passed": true,
     "n_destroyed": 3,
-    "targeting_rmse_m": 3.7579642914491598,
+    "targeting_rmse_m": 3.7577307413884404,
     "proximity_penalty_count": 0
   },
   "seed_2": {

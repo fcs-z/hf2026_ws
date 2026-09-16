@@ -1,0 +1,30 @@
+{
+  "scenario": "coop_decoy",
+  "platform_version": "Simulation 2.0.3",
+  "mode": "eval",
+  "duration_s": 600,
+  "seed": 1,
+  "total_score": 92.96,
+  "passed": true,
+  "n_destroyed": 3,
+  "completion_rate": 1.0,
+  "n_reports": 174,
+  "targeting_rmse_m": 4.418611318380818,
+  "dimension_scores": {
+    "kill": 100.0,
+    "accuracy": 96.54,
+    "mission_time": 100.0
+  },
+  "penalty_breakdown": {
+    "proximity": {
+      "count": 3,
+      "unit": 2.0
+    },
+    "boundary": {
+      "count": 0,
+      "unit": 2.0
+    },
+    "cap": 15.0
+  },
+  "evaluation_file": "coop_decoy_1789517690.evaluation.json"
+}

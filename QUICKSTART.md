@@ -3,6 +3,21 @@
 本页仅列出赛题一和赛题二的安装、检查及评测命令。完整算法说明请阅读
 [README.md](README.md)。
 
+从 Git 仓库获取本项目时，先安装并启用 Git LFS：
+
+```bash
+sudo apt update
+sudo apt install -y git-lfs
+git lfs install
+git clone https://github.com/fcs-z/hf2026_ws.git
+cd hf2026_ws
+git lfs pull
+```
+
+最后一条命令会下载模型、离线 wheelhouse 和技术报告等全部 LFS 文件。若暂时只需要模型，
+可把它替换为 `git lfs pull --include="models/*.pt"`；执行离线安装前仍需运行一次不带
+`--include` 的 `git lfs pull`，以取得完整离线依赖。
+
 ## 1 准备官方平台
 
 如果已经有完整的 `hf2026-sim`，可直接进入下一步。新环境执行：
@@ -24,7 +39,9 @@ chmod +x install_offline.sh check_submission.sh run_task1.sh run_task2.sh
 ```
 
 安装脚本会使用项目自带的 uv 和 wheelhouse 创建或更新 `hf2026-sim/.venv`，全程不访问
-网络。同名算法文件会先备份到 `hf2026-sim/.hf2026_submission_backup/`。
+网络。同名算法文件会先备份到 `hf2026-sim/.hf2026_submission_backup/`。安装包包含官方
+v2.0.2 与 v2.0.3 两套 A* 路线缓存，运行时会根据平台的 `VERSION` 自动选择；同时会把
+赛题二本地 UE 相机容量校正为至少三路。
 
 ## 3 正式 UE 评测
 
@@ -39,6 +56,8 @@ cd /path/to/hf2026_ws
 ```
 
 正式 UE 评测固定运行 600 秒。评测结束后，终端会打印本次 `evaluation.json` 路径。
+若在多套 `hf2026-sim` 间切换，先进入上一套平台执行 `./stop.sh`，避免残留 Redis、bridge
+或 UE 进程导致端口顺延和日志混淆。
 
 ## 4 无 UE 快速回归
 

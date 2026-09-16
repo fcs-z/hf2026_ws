@@ -67,9 +67,15 @@ if [ "${HF2026_SKIP_GPU_PREFLIGHT:-0}" != "1" ] && command -v nvidia-smi >/dev/n
     fi
 fi
 "$PYTHON_BIN" "$ROOT_DIR/scripts/validate_yolo_model.py" "$YOLO_MODEL" "$MODEL_TASK"
+if [ "$MODEL_TASK" = "task2" ]; then
+    # v2.0.3 的部分 Linux 包把 UE capture 上限写成 2，第三架机因此没有照片流。
+    # 每次正式评测前再次校正，兼容用户覆盖安装或恢复官方配置后的情况。
+    "$PYTHON_BIN" "$ROOT_DIR/scripts/configure_ue_camera_capacity.py" "$ROOT_DIR" 3
+fi
 
 cd "$ROOT_DIR"
 echo "将重启本项目的 Redis/bridge/前端，并运行 600 秒 $SCENARIO eval。"
+echo "仿真平台: $(sed -n '1p' "$ROOT_DIR/VERSION" 2>/dev/null || echo 未知版本)"
 echo "YOLO 权重: $YOLO_MODEL"
 export HF2026_ROUTE_SEED="$SEED"
 export HF2026_SENSOR_MODEL="$YOLO_MODEL"

@@ -127,6 +127,7 @@ fi
 
 cd "$ROOT_DIR"
 echo "运行 $SCENARIO | seed=$SEED | duration=${DURATION}s | mode=$MODE"
+echo "仿真平台: $(sed -n '1p' "$ROOT_DIR/VERSION" 2>/dev/null || echo 未知版本)"
 echo "Agent: $AGENT"
 echo "输出: $OUTPUT_DIR"
 HF2026_ROUTE_SEED="$SEED" "$PYTHON_BIN" -m competition run \

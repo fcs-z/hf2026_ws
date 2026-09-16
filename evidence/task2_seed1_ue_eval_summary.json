@@ -1,5 +1,6 @@
 {
   "scenario": "coop_decoy",
+  "platform_version": "Simulation 2.0.2",
   "mode": "eval",
   "duration_s": 600,
   "seed": 1,

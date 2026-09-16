@@ -58,8 +58,9 @@ install_one competition/scenarios/search_track/config/algorithm.yaml
 install_one competition/scenarios/coop_decoy/config/algorithm.yaml
 install_one config/points.json
 install_one config/public_astar_routes.json
+install_one config/public_astar_routes_v203.json
 
-for script in prepare_official_yolo_dataset.py prepare_scenario.py \
+for script in configure_ue_camera_capacity.py prepare_official_yolo_dataset.py prepare_scenario.py \
     summarize_results.py train_official_yolo.py validate_yolo_model.py; do
     install_one "scripts/$script"
 done
@@ -73,6 +74,11 @@ for model in hf2026_target_vehicle_domain_v1.pt hf2026_vehicle_binary_v2.pt \
     backup_one "$relative"
     install -D -m 0644 "$PACKAGE_DIR/$relative" "$SIM_ROOT/$relative"
 done
+
+# 官方 v2.0.3 的 renderer 容量为 4，但部分 Linux 包的 UE capture 配置仍为 2，
+# 会让赛题二第三架无人机没有相机流。安装时修正为至少三路并保留原文件备份。
+python3.12 "$SIM_ROOT/scripts/configure_ue_camera_capacity.py" \
+    "$SIM_ROOT" 3 --backup-root "$backup_root"
 
 wheel_count=$(find "$PACKAGE_DIR/runtime/wheels" -maxdepth 1 -type f -name '*.whl' | wc -l)
 if [ "$wheel_count" -eq 0 ]; then

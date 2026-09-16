@@ -460,9 +460,13 @@ class HighScoreCoopAgent(CoopAgent):
         return [
             fly_to(anchor[0], anchor[1], speed=40.0, loiter_radius=110.0),
             point_gimbal(pan, tilt),
-            # Route gating makes 18 degrees wide enough while rejecting many
-            # nearby decoys that previously stole the engine's raw lock.
-            set_gimbal_fov(18.0),
+            # v2.0.3 moves decoys along dense, engine-planned road paths.  An
+            # 18-degree cone can contain both the guided real target and a
+            # crossing decoy; the engine then publishes the decoy as the raw
+            # detection and K=2 dwell repeatedly resets.  The route prior is
+            # accurate to a few metres, so a 10-degree cone still covers its
+            # timing/terrain error while rejecting most adjacent-road traffic.
+            set_gimbal_fov(10.0),
         ]
 
     def _guided_decide(self, obs: CoopObs, destroyed: int) -> List[Command]:
